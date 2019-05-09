@@ -12,6 +12,8 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
+import java.util.HashMap;
+import java.util.Map;
 import javax.swing.JOptionPane;
 import javax.swing.Timer;
 import snake.Direction;
@@ -32,6 +34,8 @@ public class Board extends javax.swing.JPanel {
     private Snake snake;
     private static Food food;
     private boolean girando = false;
+    private HashMap<String, String> playersScore = new HashMap<>();
+    
     
     public void setScoreBoard(ScoreBoard score){
         this.score = score;
@@ -52,7 +56,7 @@ public class Board extends javax.swing.JPanel {
         addKeyListener(keyAdepter);
         setFocusable(true);
         
-        int deltaTime = 100;
+        int deltaTime = 125;
         timer = new Timer (deltaTime, new ActionListener() {
             public void actionPerformed(ActionEvent evt){
                 mainLoop();
@@ -127,10 +131,48 @@ public class Board extends javax.swing.JPanel {
     }
     
     private void gameOver() {
+        int score1 = 0;
+        int score2 = 0;
+        int score3 = 0;
         timer.stop();
-        JOptionPane.showMessageDialog(null,
+        String topPlayers[] = new String[3];
+        if(playersScore.size() < 2){
+            JOptionPane.showMessageDialog(null,
             "Game Over.\nYour size has been " + score.getScore());
-        startNewGame();
+            String nombre = JOptionPane.showInputDialog("Write your name.");
+            playersScore.put(nombre, Integer.toString(score.getScore()));
+            startNewGame();
+        } else {
+            JOptionPane.showMessageDialog(null,
+            "Game Over.\nYour size has been " + score.getScore());
+            String nombre = JOptionPane.showInputDialog("Write your name.");
+            playersScore.put(nombre, Integer.toString(score.getScore()));
+            for (Map.Entry<String, String> en : playersScore.entrySet()) {
+                String key = en.getKey();
+                String val = en.getValue();
+                int valInt = Integer.parseInt(val);
+                if(valInt > score1){
+                    score2 = score1;
+                    score1 = valInt;
+                    topPlayers[2] = topPlayers[1];
+                    topPlayers[1] = topPlayers[0];
+                    topPlayers[0] = key + ": " + score1;
+                    
+                } else if(valInt > score2){
+                    score3 = score2;
+                    score2 = valInt;
+                    topPlayers[2] = topPlayers[1];
+                    topPlayers[1] = key + ": " + score2;
+                } else if(valInt > score3){
+                    score3 = valInt;
+                    topPlayers[2] = key + ": " + score3;
+                }
+            }
+            JOptionPane.showMessageDialog(null,"High Scores:\n1. " + topPlayers[0] + "\n2. " + 
+                    topPlayers[1] + "\n3. " + topPlayers[2]);
+            startNewGame();
+        }
+        
     }
 
     private void startNewGame() {
