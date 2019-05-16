@@ -8,6 +8,7 @@ package snake;
 import game.Board;
 import game.Food;
 import game.ScoreBoard;
+import game.SpecialFood;
 import java.awt.Color;
 import java.awt.Graphics;
 import java.awt.Toolkit;
@@ -45,6 +46,7 @@ public class Snake{
     }
     
     public boolean move(){
+        
         tInit = System.currentTimeMillis();
         float t;
         t = (System.currentTimeMillis() - tInit) / 100.0f;
@@ -82,6 +84,7 @@ public class Snake{
             body.set(i, node);
         }
         detectFood();
+        detectSpecialFood();
         return checkColision(firstNode);
     }
     
@@ -117,7 +120,7 @@ public class Snake{
             System.out.println("Food eated");
             body.add(body.get(body.size() - 1));
             body.add(body.get(body.size() - 1));
-            
+            body.add(body.get(body.size() - 1));
             Node node;
             boolean validPosition;
             Random random = new Random();
@@ -135,4 +138,47 @@ public class Snake{
             } while(!validPosition);
         }
     }
+    
+    private void detectSpecialFood() {
+        Random random = new Random();
+        SpecialFood specialFood = Board.getSpecialFood();
+        if(specialFood.getRow()==body.get(0).getRow() && specialFood.getCol()==body.get(0).getCol()){
+            System.out.println("Food eated");
+            body.add(body.get(body.size() - 1));
+            body.add(body.get(body.size() - 1));
+            body.add(body.get(body.size() - 1));
+            body.add(body.get(body.size() - 1));
+            body.add(body.get(body.size() - 1));
+            body.add(body.get(body.size() - 1));
+            body.add(body.get(body.size() - 1));
+            specialFood.setCol(-1);
+            specialFood.setRow(-1);
+            
+            
+        } else if(random.nextInt(15) == 1 && specialFood.getCol() == -1 && specialFood.getRow() == -1){
+            Node node;
+            boolean validPosition;
+            int numeroRandom = random.nextInt(5);
+            System.out.println(numeroRandom);
+            if(random.nextInt(5) == 1){
+                do{
+                    validPosition = true;
+                    specialFood.setCol(random.nextInt(Board.getCols()));
+                    specialFood.setRow(random.nextInt(Board.getRows()));
+                    for (int i = 0; i < body.size(); i++) {
+                        node = body.get(i);
+                        if(node.getCol() == specialFood.getCol() && node.getRow() == specialFood.getRow()){
+                            validPosition = false;
+                            System.out.println("Dentro del bucle de detect special food");
+                        }
+                    }
+                } while(!validPosition);
+            }
+            
+        } else if(random.nextInt(15) == 2){
+            specialFood.setCol(-1);
+            specialFood.setRow(-1);
+        }
+    }
+    
 }

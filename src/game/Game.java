@@ -32,6 +32,8 @@ public class Game extends javax.swing.JFrame {
         scoreBoard1 = new game.ScoreBoard();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
+        setTitle("Snake");
+        setPreferredSize(new java.awt.Dimension(1000, 1000));
 
         javax.swing.GroupLayout board1Layout = new javax.swing.GroupLayout(board1);
         board1.setLayout(board1Layout);

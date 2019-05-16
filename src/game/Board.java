@@ -33,7 +33,9 @@ public class Board extends javax.swing.JPanel {
     private Timer timer;
     private Snake snake;
     private static Food food;
+    private static SpecialFood specialFood;
     private boolean girando = false;
+    private boolean paused = false;
     private HashMap<String, String> playersScore = new HashMap<>();
     
     
@@ -49,8 +51,8 @@ public class Board extends javax.swing.JPanel {
         initComponents();
         snake = new Snake(5);
         food = new Food(4, 4);
+        specialFood = new SpecialFood(10, 10);
 
-        
         
         MyKeyAdapter keyAdepter = new MyKeyAdapter();
         addKeyListener(keyAdepter);
@@ -77,6 +79,10 @@ public class Board extends javax.swing.JPanel {
     
     public static Food getFood(){
         return food;
+    }
+    
+    public static SpecialFood getSpecialFood(){
+        return specialFood;
     }
     
     public static int getRows(){
@@ -119,6 +125,7 @@ public class Board extends javax.swing.JPanel {
         drawBoard(g2d);
         snake.paintSnake(g2d, squareWidth(), squareHeight());
         food.paintFood(g2d, squareWidth(), squareHeight());
+        specialFood.paintSpecialFood(g2d, squareWidth(), squareHeight());
     }
 
 
@@ -178,14 +185,19 @@ public class Board extends javax.swing.JPanel {
     private void startNewGame() {
         snake = new Snake(5);
         food = new Food(4, 4);
+        specialFood = new SpecialFood(9, 9);
         timer.restart();
     }
     
     private void pauseGame() {
-            timer.stop();
-            JOptionPane.showMessageDialog(null,
-            "Paused.\nPress OK to resume");
+        if(paused){
             timer.start();
+            paused = !paused;
+        } else {
+            timer.stop();
+            paused = !paused;
+        }
+            
         }
     
     class MyKeyAdapter extends KeyAdapter {
@@ -226,6 +238,7 @@ public class Board extends javax.swing.JPanel {
                     }
                 break;
                 case KeyEvent.VK_P:
+                    
                     pauseGame();
                 break;
                 case KeyEvent.VK_SPACE:
