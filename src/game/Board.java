@@ -12,7 +12,10 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import javax.swing.JOptionPane;
 import javax.swing.Timer;
@@ -37,6 +40,7 @@ public class Board extends javax.swing.JPanel {
     private boolean girando = false;
     private boolean paused = false;
     private HashMap<String, String> playersScore = new HashMap<>();
+    private List<String> topPlayers = new ArrayList<String>();
     
     
     public void setScoreBoard(ScoreBoard score){
@@ -51,7 +55,7 @@ public class Board extends javax.swing.JPanel {
         initComponents();
         snake = new Snake(5);
         food = new Food(4, 4);
-        specialFood = new SpecialFood(10, 10);
+        specialFood = new SpecialFood(11, 11);
 
         
         MyKeyAdapter keyAdepter = new MyKeyAdapter();
@@ -142,18 +146,27 @@ public class Board extends javax.swing.JPanel {
         int score2 = 0;
         int score3 = 0;
         timer.stop();
-        String topPlayers[] = new String[3];
-        if(playersScore.size() < 2){
+        if(playersScore.size() < 3){
             JOptionPane.showMessageDialog(null,
             "Game Over.\nYour size has been " + score.getScore());
             String nombre = JOptionPane.showInputDialog("Write your name.");
+            System.out.println("Nombre: " + nombre);
+            if(nombre == null || nombre.equals("")){
+                System.out.println("Nombre null o vacio");
+                startNewGame();
+                return;
+            }
             playersScore.put(nombre, Integer.toString(score.getScore()));
+            topPlayers.add(nombre);
+            System.out.println("player añadidio");
             startNewGame();
         } else {
             JOptionPane.showMessageDialog(null,
             "Game Over.\nYour size has been " + score.getScore());
             String nombre = JOptionPane.showInputDialog("Write your name.");
             playersScore.put(nombre, Integer.toString(score.getScore()));
+            topPlayers.add(nombre);
+            System.out.println("Tamaño: " + topPlayers.size());
             for (Map.Entry<String, String> en : playersScore.entrySet()) {
                 String key = en.getKey();
                 String val = en.getValue();
@@ -161,22 +174,22 @@ public class Board extends javax.swing.JPanel {
                 if(valInt > score1){
                     score2 = score1;
                     score1 = valInt;
-                    topPlayers[2] = topPlayers[1];
-                    topPlayers[1] = topPlayers[0];
-                    topPlayers[0] = key + ": " + score1;
+                    topPlayers.set(2, topPlayers.get(1));
+                    topPlayers.set(1, topPlayers.get(0));
+                    topPlayers.set(0, key + ": " + score1);
                     
                 } else if(valInt > score2){
                     score3 = score2;
                     score2 = valInt;
-                    topPlayers[2] = topPlayers[1];
-                    topPlayers[1] = key + ": " + score2;
+                    topPlayers.set(2, topPlayers.get(1));
+                    topPlayers.set(1, key + ": " + score2);
                 } else if(valInt > score3){
                     score3 = valInt;
-                    topPlayers[2] = key + ": " + score3;
+                    topPlayers.set(2, key + ": " + score3);
                 }
             }
-            JOptionPane.showMessageDialog(null,"High Scores:\n1. " + topPlayers[0] + "\n2. " + 
-                    topPlayers[1] + "\n3. " + topPlayers[2]);
+            JOptionPane.showMessageDialog(null,"High Scores:\n1. " + topPlayers.get(0) + "\n2. " + 
+                    topPlayers.get(1) + "\n3. " + topPlayers.get(2));
             startNewGame();
         }
         
@@ -185,7 +198,7 @@ public class Board extends javax.swing.JPanel {
     private void startNewGame() {
         snake = new Snake(5);
         food = new Food(4, 4);
-        specialFood = new SpecialFood(9, 9);
+        specialFood = new SpecialFood(11, 11);
         timer.restart();
     }
     

@@ -51,42 +51,78 @@ public class Snake{
         float t;
         t = (System.currentTimeMillis() - tInit) / 100.0f;
         Toolkit.getDefaultToolkit().sync();
-        Node firstNode = body.get(0);
-        Node node;
-        Node nextNode;
-        int nextPiecePosition[] = {firstNode.getRow(), firstNode.getCol()};
-        switch(direction){ 
-        case right:
-            firstNode.setCol(firstNode.getCol() + 1);
-            body.set(0, firstNode);
-            break;
-        case up:
-            firstNode.setRow(firstNode.getRow() - 1);
-            body.set(0, firstNode);
-            break;
-        case down:
-            firstNode.setRow(firstNode.getRow() + 1);
-            body.set(0, firstNode);
-            break;
-        case left:
-            firstNode.setCol(firstNode.getCol() - 1);
-            body.set(0, firstNode);
-            break;
+//        Node firstNode = body.get(0);
+//        Node node;
+//        Node nextNode;
+//        int nextPiecePosition[] = {firstNode.getRow(), firstNode.getCol()};
+//        switch(direction){ 
+//        case right:
+//            firstNode.setCol(firstNode.getCol() + 1);
+//            body.set(0, firstNode);
+//            break;
+//        case up:
+//            firstNode.setRow(firstNode.getRow() - 1);
+//            body.set(0, firstNode);
+//            break;
+//        case down:
+//            firstNode.setRow(firstNode.getRow() + 1);
+//            body.set(0, firstNode);
+//            break;
+//        case left:
+//            firstNode.setCol(firstNode.getCol() - 1);
+//            body.set(0, firstNode);
+//            break;
+//        }
+//        node = new Node(nextPiecePosition[0], nextPiecePosition[1]);
+//        nextNode = body.get(1);
+//        body.set(1, node);
+//        for (int i = 2; i < body.size(); i++) {
+//            nextPiecePosition[0] = nextNode.getRow();
+//            nextPiecePosition[1] = nextNode.getCol();
+//            node = new Node(nextPiecePosition[0], nextPiecePosition[1]);
+//            nextNode = body.get(i);
+//            body.set(i, node);
+//        }
+
+        int row = body.get(0).getRow();
+        int col = body.get(0).getCol();
+        switch (direction) {
+            case up:
+                if (direction != Direction.down) {
+                    moveTo(row - 1, col);
+                }
+                break;
+            case down:
+                if (direction != Direction.up) {
+                    moveTo(row + 1, col);
+                }
+                break;
+            case left:
+                if (direction != Direction.right) {
+                    moveTo(row, col - 1);
+                }
+                break;
+            case right:
+                if (direction != Direction.left) {
+                    moveTo(row, col + 1);
+                }
+                break;
         }
-        node = new Node(nextPiecePosition[0], nextPiecePosition[1]);
-        nextNode = body.get(1);
-        body.set(1, node);
-        for (int i = 2; i < body.size(); i++) {
-            nextPiecePosition[0] = nextNode.getRow();
-            nextPiecePosition[1] = nextNode.getCol();
-            node = new Node(nextPiecePosition[0], nextPiecePosition[1]);
-            nextNode = body.get(i);
-            body.set(i, node);
-        }
+
+
         detectFood();
         detectSpecialFood();
-        return checkColision(firstNode);
+        return checkColision(body.get(0));
     }
+    
+    private void moveTo(int row, int col) {
+        body.add(0, new Node(row, col));
+        if (remainGrow == 0) {
+            body.remove(body.size() - 1);
+        } else {
+            remainGrow --;
+        }
+}
     
     public boolean checkColision(Node firstNode){
         if(firstNode.getCol() < 0 || firstNode.getCol() >= Board.num_cols || 
