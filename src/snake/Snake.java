@@ -18,6 +18,8 @@ import java.util.Random;
 import javax.swing.JOptionPane;
 import javax.swing.Timer;
 
+import game.Config;
+
 /**
  *
  * @author alu20925322z
@@ -47,9 +49,7 @@ public class Snake{
     
     public boolean move(){
         
-        tInit = System.currentTimeMillis();
-        float t;
-        t = (System.currentTimeMillis() - tInit) / 100.0f;
+        
         Toolkit.getDefaultToolkit().sync();
 //        Node firstNode = body.get(0);
 //        Node node;
@@ -125,8 +125,8 @@ public class Snake{
 }
     
     public boolean checkColision(Node firstNode){
-        if(firstNode.getCol() < 0 || firstNode.getCol() >= Board.num_cols || 
-                firstNode.getRow() < 0 || firstNode.getRow() >= Board.num_rows){
+        if(firstNode.getCol() < 0 || firstNode.getCol() >= Config.NUM_COLS || 
+                firstNode.getRow() < 0 || firstNode.getRow() >= Config.NUM_ROWS){
             return true;
         } else {
             Node node;
@@ -180,16 +180,11 @@ public class Snake{
         SpecialFood specialFood = Board.getSpecialFood();
         if(specialFood.getRow()==body.get(0).getRow() && specialFood.getCol()==body.get(0).getCol()){
             System.out.println("Food eated");
-            body.add(body.get(body.size() - 1));
-            body.add(body.get(body.size() - 1));
-            body.add(body.get(body.size() - 1));
-            body.add(body.get(body.size() - 1));
-            body.add(body.get(body.size() - 1));
-            body.add(body.get(body.size() - 1));
-            body.add(body.get(body.size() - 1));
+            for (int i = 0; i < 7; i++) {
+                body.add(body.get(body.size() - 1));  
+            }
             specialFood.setCol(-1);
-            specialFood.setRow(-1);
-            
+            specialFood.setRow(-1);            
             
         } else if(random.nextInt(15) == 1 && specialFood.getCol() == -1 && specialFood.getRow() == -1){
             Node node;

@@ -8,6 +8,7 @@ package game;
 import java.awt.Color;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
+import java.awt.Toolkit;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.KeyAdapter;
@@ -28,8 +29,8 @@ import snake.Snake;
  */
 public class Board extends javax.swing.JPanel {
 
-    public static int num_rows = 20;
-    public static int num_cols = 20;
+    //public static int num_rows = 20;
+    //public static int num_cols = 20;
     
     private ScoreBoard score;
     
@@ -62,14 +63,14 @@ public class Board extends javax.swing.JPanel {
         addKeyListener(keyAdepter);
         setFocusable(true);
         
-        int deltaTime = 125;
-        timer = new Timer (deltaTime, new ActionListener() {
+
+        timer = new Timer (Config.DELTATIME, new ActionListener() {
             public void actionPerformed(ActionEvent evt){
                 mainLoop();
             }
         });
-        timer.start();
     }
+    
     
     public void mainLoop(){
         if(snake.move()){
@@ -79,6 +80,7 @@ public class Board extends javax.swing.JPanel {
             repaint();
             girando = false;
         }
+        Toolkit.getDefaultToolkit().sync();
     }
     
     public static Food getFood(){
@@ -90,19 +92,19 @@ public class Board extends javax.swing.JPanel {
     }
     
     public static int getRows(){
-        return num_rows;
+        return Config.NUM_ROWS;
     }
     
     public static int getCols(){
-        return num_cols;
+        return Config.NUM_COLS;
     }
     
     private int squareWidth(){
-        return getWidth() / num_cols;
+        return getWidth() / Config.NUM_COLS;
     }
     
     private int squareHeight() {
-        return getHeight() / num_rows;
+        return getHeight() / Config.NUM_ROWS;
     }
     
     public static void drawSquare(Graphics g, int row, int col, int squareWidth, int squareHeight, Color color) {
@@ -134,8 +136,8 @@ public class Board extends javax.swing.JPanel {
 
 
     private void drawBoard(Graphics2D g2d) {
-        for (int row = 0; row < num_rows; row++) {
-            for (int col = 0; col < num_cols; col++) {
+        for (int row = 0; row < Config.NUM_ROWS; row++) {
+            for (int col = 0; col < Config.NUM_COLS; col++) {
                 drawSquare(g2d, row, col, squareWidth(), squareHeight(), Color.DARK_GRAY);
             }
         }
@@ -195,22 +197,23 @@ public class Board extends javax.swing.JPanel {
         
     }
 
-    private void startNewGame() {
+    public void startNewGame() {
         snake = new Snake(5);
         food = new Food(4, 4);
         specialFood = new SpecialFood(11, 11);
+        timer.setDelay(Config.DELTATIME);
         timer.restart();
     }
     
     private void pauseGame() {
         if(paused){
-            timer.start();
+            timer.restart();
             paused = !paused;
         } else {
             timer.stop();
             paused = !paused;
         }
-            
+        System.out.println(paused);
         }
     
     class MyKeyAdapter extends KeyAdapter {
@@ -251,7 +254,6 @@ public class Board extends javax.swing.JPanel {
                     }
                 break;
                 case KeyEvent.VK_P:
-                    
                     pauseGame();
                 break;
                 case KeyEvent.VK_SPACE:
